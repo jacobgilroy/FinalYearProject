@@ -1,12 +1,12 @@
-from PyQt4 import QtGui
-from JamSpace import Lane
+from PyQt5 import QtGui
+from JamSpace import LaneView
 
 class LaneSpace(QtGui.QWidget):
 
     def __init__(self):
 
         # initialise a sample lane:
-        sampleLane = Lane(name="Sample Lane")
+        sampleLane = LaneView(name="Sample Lane")
         self.laneList = [sampleLane]
 
         self.cursorPosition = 0.0
@@ -18,7 +18,7 @@ class LaneSpace(QtGui.QWidget):
         newPosition = len(self.laneList)
         newName = "Lane" + str(newPosition)
 
-        newLane = Lane(name=newName)
+        newLane = LaneView(name=newName)
 
         self.laneList.append(newLane)
 
