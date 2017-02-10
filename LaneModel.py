@@ -2,7 +2,7 @@ from JamSpace.LaneSettings import LaneSettings
 from JamSpace.RecordThread import RecordThread
 from JamSpace.PlayThread import PlayThread
 
-class LaneModel(object):
+class LaneModel:
 
     def __init__(self, laneNum):
 
@@ -14,12 +14,16 @@ class LaneModel(object):
 
     def record(self):
 
-        try:
-            self.recordThread.start()
-        except IOError:
-            print("! An error has occurred !")
-            print("*cannot record*")
-            return False
+        if self.recordThread.recording:
+            self.stopRecording()
+        else:
+
+            try:
+                self.recordThread.start()
+            except IOError:
+                print("! An error has occurred !")
+                print("*cannot record*")
+                return False
 
         return True
 

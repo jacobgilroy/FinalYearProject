@@ -7,7 +7,6 @@ class LaneController:
 
     def __init__(self, laneNum):
 
-
         #set member variables:
         self.model = LaneModel(laneNum)
         self.view = LaneView(laneNum)
@@ -19,7 +18,8 @@ class LaneController:
 
         # connect the UI signals to the correct slots:
         self.view.recBtn.clicked.connect(self.record)
-        self.view.playBtn.clicked.connect(self.play)
+
+        #self.view.playBtn.clicked.connect(self.play)
 
     def record(self):
 
@@ -42,3 +42,4 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     controller = LaneController(1)
     sys.exit(app.exec_())
+

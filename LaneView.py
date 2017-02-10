@@ -1,6 +1,6 @@
-from PyQt5.QtWidgets import QMainWindow, QPushButton, QCheckBox, QLabel, QHBoxLayout, QVBoxLayout
+from PyQt5.QtWidgets import QWidget, QPushButton, QCheckBox, QLabel, QHBoxLayout, QVBoxLayout
 
-class LaneView(QMainWindow):
+class LaneView(QWidget):
 
     def __init__(self, laneNum):
 
@@ -17,7 +17,7 @@ class LaneView(QMainWindow):
         self.soloCb = QCheckBox("Solo", self)
 
         # temp button (should be in different place in gui):
-        self.playBtn = QPushButton('Play', self)
+        # self.playBtn = QPushButton('Play', self)
 
         self.initUI()
 
@@ -25,6 +25,7 @@ class LaneView(QMainWindow):
 
         # set the layout for the lane:
 
+        self.setGeometry(800, 100, 350, 80)
         hbox = QHBoxLayout(self)
         vboxLeft = QVBoxLayout(self)
         vboxRight = QVBoxLayout(self)
