@@ -4,7 +4,7 @@ import wave
 
 class RecordThread(QThread):
 
-    def __init__(self, laneNum):
+    def __init__(self):
 
         super().__init__()
 
