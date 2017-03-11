@@ -53,7 +53,7 @@ class LaneView(QWidget):
         self.recBtn.clicked.connect(self.recordHandler)
 
 
-    def changeName(self, name):
+    def setName(self, name):
 
         self.name = name
         self.label.setText(name)

@@ -1,3 +1,4 @@
+from PyQt5.QtCore import pyqtSlot
 from JamSpace.Views.MainView import MainView
 from JamSpace.Models.MainModel import MainModel
 from JamSpace.Models.LaneSpaceModel import LaneSpaceModel
@@ -15,6 +16,10 @@ class MainController:
         self.laneModelList = []
         self.getLaneModels()
 
+        self.signalSlotConfig()
+
+        self.getProjectDir()
+
 
     # method to refresh the GUI/views
 
@@ -26,16 +31,30 @@ class MainController:
         for laneView in self.mainWindow.laneSpace.laneList:
             self.laneModelList.append(laneView.model)
 
+    @pyqtSlot(int)
     def startRecording(self, laneID):
 
-        lane = [l for l in self.laneModelList if l['id'] == laneID]
-        lane.startRecording()
+        #extract the lane in question:
+        lane = next((l for l in self.laneModelList if l.id == laneID), None)
+
+        if lane is None:
+            print("Lane with id " + laneID + " doesn't exist")
+        else:
+            lane.startRecording()
 
     def signalSlotConfig(self):
 
         # connect each lane's recordEven signal to the record method:
         for lane in self.mainWindow.laneSpace.laneList:
-            lane.recordEvent.connect(self.startRecording)
+            lane.recordEvent[int].connect(self.startRecording)
 
 
+    def getProjectDir(self):
 
+        directory = self.mainWindow.showDirectoryDialog()
+
+        self.model.projectDirectory = directory
+
+        for model in self.laneModelList:
+
+            model.setDirectory(directory)

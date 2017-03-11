@@ -14,7 +14,12 @@ class RecordThread(QThread):
         self.FORMAT = pyaudio.paInt16
         self.CHANNELS = 2
         self.RATE = 44100
+        self.OUTPUT_PATH = ""
         self.p = pyaudio.PyAudio()
+
+    def setOutputPath(self, path):
+
+        self.OUTPUT_PATH = path
 
     def run(self):
 
@@ -41,13 +46,17 @@ class RecordThread(QThread):
         stream.close()
         self.p.terminate()
 
-        wf = wave.open("test.wav", 'wb')
+        fullPath = str(self.OUTPUT_PATH+"/test.wav")
+
+        wf = wave.open(fullPath, 'wb')
         wf.setnchannels(self.CHANNELS)
         wf.setsampwidth(self.p.get_sample_size(self.FORMAT))
         wf.setframerate(self.RATE)
         wf.writeframes(b''.join(frames))
 
-        wf.close()
 
-        return wf
+        print(self.OUTPUT_PATH)
+        print(fullPath)
+
+        wf.close()
 

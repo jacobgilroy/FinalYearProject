@@ -13,8 +13,14 @@ class LaneModel:
         self.clips = [] # a list to store each wav associated with this lane
         self.activated = True
         self.volume = 50.0
+        self.outputDir = ""
 
-    def changeName(self, newName):
+    def setDirectory(self, path):
+
+        self.outputDir = path
+        self.recordThread.setOutputPath(path)
+
+    def setName(self, newName):
 
         self.name = newName
 

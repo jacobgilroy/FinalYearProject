@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QWidget, QSplitter, QHBoxLayout, QFrame
+from PyQt5.QtWidgets import QWidget, QSplitter, QHBoxLayout, QFrame, QFileDialog
 from PyQt5.QtCore import Qt
 from JamSpace.Views.LaneSpaceView import LaneSpaceView
 
@@ -10,6 +10,7 @@ class MainView(QWidget):
 
         # declare member variables:
         self.laneSpace = LaneSpaceView(parent=self)
+        self.projectDir = ''
 
         # Initialise the UI:
         self.initUI()
@@ -41,3 +42,11 @@ class MainView(QWidget):
         self.setLayout(hbox)
 
         self.show()
+
+    def showDirectoryDialog(self):
+
+        dirSelectionDialog = QFileDialog(self)
+
+        self.projectDir = QFileDialog.getExistingDirectory(dirSelectionDialog, 'Select Project Folder')
+
+        return self.projectDir
