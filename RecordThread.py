@@ -54,9 +54,5 @@ class RecordThread(QThread):
         wf.setframerate(self.RATE)
         wf.writeframes(b''.join(frames))
 
-
-        print(self.OUTPUT_PATH)
-        print(fullPath)
-
         wf.close()
 
