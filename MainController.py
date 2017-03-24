@@ -12,43 +12,56 @@ class MainController:
         self.mainWindow = MainView()
         self.model = MainModel()
 
-        # obtain references to the models:
+        # obtain references to the Lane Space Model:
         self.laneSpaceModel = self.mainWindow.laneSpace.model
-        self.laneModelList = []
-        self.getLaneModels()
 
         self.signalSlotConfig()
 
         self.promptProjectDir()
 
+    def addLane(self):
 
-    # method to refresh the GUI/views
+        # instruct the lanespace model to add a new lane:
+        self.laneSpaceModel.addLane()
 
-    # this method refreshes laneModelList
+        # instruct the laneview to retrieve it's lanes from the model (refresh it's list):
+        self.mainWindow.laneSpace.getLanes()
+
+        # connect the new lane signals to their slots:
+        for lane in self.mainWindow.laneSpace.laneList:
+            lane.recordEvent[int].connect(self.startRecording)
+
+    # method to refresh the GUI/views? *****
+
+    '''    # this method refreshes laneModelList
     def getLaneModels(self):
 
         self.laneModelList = []
 
         for laneView in self.mainWindow.laneSpace.laneList:
             self.laneModelList.append(laneView.model)
+    '''
 
     @pyqtSlot(int)
     def startRecording(self, laneID):
 
         #extract the lane in question:
-        lane = next((l for l in self.laneModelList if l.id == laneID), None)
+        lane = next((l for l in self.laneSpaceModel.laneList if l.id == laneID), None)
 
         if lane is None:
             print("Lane with id " + laneID + " doesn't exist")
         else:
+            print('Recording on lane ' + str(laneID)) # DEBUG
             lane.startRecording()
 
     def signalSlotConfig(self):
 
-        # connect each lane's recordEven signal to the record method:
+        # connect each lane's recordEvent signal to the record method:
         for lane in self.mainWindow.laneSpace.laneList:
             lane.recordEvent[int].connect(self.startRecording)
 
+        # connect the MainView Buttons to their corresponding slots:
+        self.mainWindow.controlBar.addLaneBtn.pressed.connect(self.addLane)
 
     def promptProjectDir(self):
 
@@ -67,7 +80,7 @@ class MainController:
         # pass the directory to each lane model:
 
         clipsFolder = self.model.projectPath + "/Clips"
-        for model in self.laneModelList:
+        for model in self.laneSpaceModel.laneList:
 
             model.setDirectory(clipsFolder)
 
@@ -90,16 +103,18 @@ class MainController:
         # create project file if doesn't exist:
         try:
             projectFile = open(projectFilePath, 'r')
-            projectFile = open(projectFilePath, 'w')
         except FileNotFoundError:
             projectFile = open(projectFilePath, 'w')
+
+        projectFile.close()
 
         # create project config file if doesn't exist:
         try:
             configFileHandle = open(configFilePath, 'r')
-            configFileHandle = open(configFilePath, 'w')
         except FileNotFoundError:
             configFileHandle = open(configFilePath, 'w')
+
+        configFileHandle.close()
 
         # create clips folder if doesn't exist:
         try:

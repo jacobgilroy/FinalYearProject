@@ -7,28 +7,37 @@ class LaneView(QWidget):
     # define event signals:
     recordEvent = pyqtSignal(int)
 
-    def __init__(self, parent, laneNum):
+    def __init__(self, parent, laneModel):
 
         super().__init__(parent)
 
         # set member variables:
-        self.id = laneNum   # pass through the id from the main controller (list of lanes)
-        self.model = LaneModel(self.id)
-        self.name = "Lane " + str(laneNum + 1)
+        self.model = laneModel
 
         self.label = QLabel(self)
-        self.label.setText(self.name)
         self.recBtn = QPushButton('Rec', self)
         self.activatedCb = QCheckBox("Activated", self)
         self.soloCb = QCheckBox("Solo", self)
 
+        self.HEIGHT = 80
+        self.WIDTH = 150
+
+        self.loadData()
+
         self.initUI()
+
+    # this method loads data from the model:
+    def loadData(self):
+
+        self.label.setText(self.model.name)
 
     def initUI(self):
 
         # set the layout for the lane:
 
-        # self.setGeometry(800, 100, 350, 80)
+        #self.setGeometry(800, 100, 350, 80)
+
+        self.setFixedHeight(self.HEIGHT)
         hbox = QHBoxLayout(self)
         vboxLeft = QVBoxLayout(self)
         vboxRight = QVBoxLayout(self)
@@ -52,14 +61,11 @@ class LaneView(QWidget):
 
         self.recBtn.clicked.connect(self.recordHandler)
 
+    def setLabel(self, name):
 
-    def setName(self, name):
-
-        self.name = name
         self.label.setText(name)
-        self.model.changeName(name)
 
     def recordHandler(self):
 
-        self.recordEvent.emit(self.id)
+        self.recordEvent.emit(self.model.id)
 

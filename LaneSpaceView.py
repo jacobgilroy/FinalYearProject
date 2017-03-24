@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QWidget, QVBoxLayout
 from JamSpace.Views.LaneView import LaneView
 from JamSpace.Models.LaneSpaceModel import LaneSpaceModel
 
@@ -10,42 +10,65 @@ class LaneSpaceView(QWidget):
 
         # declare member variables:
         self.model = LaneSpaceModel()
-        self.numLanes = 0
         self.laneList = []
-
-        defaultLane = LaneView(parent=self, laneNum=0)
+        '''
+        defaultLane = LaneView(parent=self, laneNum=1)
         self.laneList.append(defaultLane)
+        '''
 
-        self.laneSelected = 0
+        self.vboxLayout = QVBoxLayout(self)
 
         self.initUI()
 
     def initUI(self):
 
+        self.getLanes() # load the lanes
+
+        self.positionLanes()
+
         self.show()
 
-        #self.getLanes() # load the lanes
+    # this method retrieves lane models from the LaneSpaceModel and instantiates corresponding lane views:
+    def getLanes(self):
 
-    # retrieve lane info from the model:
-    #def getLanes(self):
+        self.laneList = []
 
-        # iterate through the model's list and load the data:
-        #for lane in self.model.laneList:
-            #self.laneList[lane['id']].id = lane['id']
+        for laneModel in self.model.laneList:
+
+            laneView = LaneView(parent=self, laneModel=laneModel)
+            self.laneList.append(laneView)
+
+        self.positionLanes()
+
+
+    # this method stacks the lanes vertically:
+    def positionLanes(self):
+
+        self.vboxLayout = QVBoxLayout(self)
+
+        for lane in self.laneList:
+
+            self.vboxLayout.addWidget(lane)
+
+        self.setLayout(self.vboxLayout)
+
+'''
+        for i in range(len(self.laneList)):
+
+            current = self.laneList[i]
+            height = current.HEIGHT
+
+            if i == 0:
+                current.setGeometry(0, 0, self.width(), height)
+
+            else:
+                previous = self.laneList[i-1]
+
+                xPos = previous.x
+                yPos = previous.y - previous.height()
+
+                current.setGeometry(xPos, yPos, self.width(), height)
+
+'''
 
     #def refresh(self):
-
-     #   self.numLanes = self.model.
-
-'''
-    def addLane(self):
-
-        self.numLanes += 1
-        newLane = LaneView(parent=self, laneNum = self.numLanes)
-        self.laneList.append(newLane)
-
-    def removeLane(self, laneNum):
-
-        self.numLanes -= 1
-        self.laneList.pop(laneNum)
-'''

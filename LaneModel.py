@@ -14,11 +14,23 @@ class LaneModel:
         self.activated = True
         self.volume = 50.0
         self.outputDir = ""
+        self.outputFileName = ""
 
     def setDirectory(self, path):
 
         self.outputDir = path
         self.recordThread.setOutputPath(path)
+
+        self.setOutputFileName()
+
+    def setOutputFileName(self):
+
+        # set the new output file name:
+        self.outputFileName = self.name + "-" + str(len(self.clips)+1)
+
+        # set the record thread's output file name:
+        self.recordThread.setOutputFileName(self.outputFileName)
+
 
     def setName(self, newName):
 
@@ -37,6 +49,9 @@ class LaneModel:
 
     def startRecording(self):
 
+        # call for the output file name to be updated:
+        self.setOutputFileName()
+
         if self.recordThread.recording:
             self.stopRecording()
         else:
@@ -53,6 +68,9 @@ class LaneModel:
     def stopRecording(self):
 
         self.recordThread.recording = False
+
+        # update the output file name:
+        self.setOutputFileName()
 
     def play(self):
 
