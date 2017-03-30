@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QWidget, QSplitter, QHBoxLayout, QFrame, QFileDialog, QPushButton
+from PyQt5.QtWidgets import QWidget, QSplitter, QVBoxLayout, QFrame, QFileDialog
 from PyQt5.QtCore import Qt
 from JamSpace.Views.LaneSpaceView import LaneSpaceView
 from JamSpace.Views.ControlBar import ControlBar
@@ -21,10 +21,8 @@ class MainView(QWidget):
 
     def initUI(self):
 
-        self.setGeometry(30,30, self.WIDTH, self.HEIGHT)
+        self.setGeometry(20, 30, self.WIDTH, self.HEIGHT)
         self.setWindowTitle('JamSpace')
-
-#        self.laneSpace.setGeometry(self.WIDTH, self.HEIGHT)
 
         # Instantiate UI components:
         laneEditSpace = QFrame(self)
@@ -43,10 +41,12 @@ class MainView(QWidget):
         vSplitter.addWidget(self.laneSpace)
         vSplitter.addWidget(hSplitter)
 
-        hbox = QHBoxLayout(self)
-        hbox.addWidget(vSplitter)
+        vbox = QVBoxLayout(self)
+        vbox.addWidget(vSplitter)
 
-        self.setLayout(hbox)
+       #vbox.setAlignment(Qt.AlignTop)
+
+        self.setLayout(vbox)
 
         self.show()
 

@@ -17,6 +17,21 @@ class ControlBar(QWidget):
 
     def initUI(self):
 
+        # set the size of the buttons based on its text:
+
+        addLaneWidth = self.addLaneBtn.fontMetrics().boundingRect(self.addLaneBtn.text()).width()
+        addLaneHeight = self.addLaneBtn.fontMetrics().boundingRect(self.addLaneBtn.text()).height()
+
+        playWidth = self.playBtn.fontMetrics().boundingRect(self.playBtn.text()).width()
+        playHeight = self.playBtn.fontMetrics().boundingRect(self.playBtn.text()).height()
+
+        stopWidth = self.stopBtn.fontMetrics().boundingRect(self.stopBtn.text()).width()
+        stopHeight = self.stopBtn.fontMetrics().boundingRect(self.stopBtn.text()).height()
+
+        self.addLaneBtn.setFixedSize(addLaneWidth + 10, addLaneHeight + 10)
+        self.playBtn.setFixedSize(playWidth + 10, playHeight + 10)
+        self.stopBtn.setFixedSize(stopWidth + 10, stopHeight + 10)
+
         hbox = QHBoxLayout(self)
 
         hbox.addWidget(self.playBtn)

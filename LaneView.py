@@ -19,7 +19,7 @@ class LaneView(QWidget):
         self.activatedCb = QCheckBox("Activated", self)
         self.soloCb = QCheckBox("Solo", self)
 
-        self.HEIGHT = 80
+        self.HEIGHT = 50
         self.WIDTH = 150
 
         self.loadData()
@@ -35,9 +35,11 @@ class LaneView(QWidget):
 
         # set the layout for the lane:
 
-        #self.setGeometry(800, 100, 350, 80)
-
+        self.setFixedWidth(self.WIDTH)
         self.setFixedHeight(self.HEIGHT)
+
+
+
         hbox = QHBoxLayout(self)
         vboxLeft = QVBoxLayout(self)
         vboxRight = QVBoxLayout(self)
@@ -57,9 +59,10 @@ class LaneView(QWidget):
 
         self.show()
 
+    # doesn't recognise connect method for some reason:
     def signalSlotInit(self):
 
-        self.recBtn.clicked.connect(self.recordHandler)
+       self.recBtn.clicked.connect(self.recordHandler)
 
     def setLabel(self, name):
 

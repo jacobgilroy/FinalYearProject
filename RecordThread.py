@@ -24,7 +24,7 @@ class RecordThread(QThread):
 
     def setOutputPath(self, path):
 
-        self.OUTPUT_PATH = path
+        self.OUTPUT_PATH = path + "/clips/" + "/"
 
     def run(self):
 
@@ -48,10 +48,9 @@ class RecordThread(QThread):
 
         print("* DONE RECORDING *")
 
-        stream.stop_stream()
         stream.close()
-        self.p.terminate()
 
+        print(fullPath)
         wf = wave.open(fullPath, 'wb')
         wf.setnchannels(self.CHANNELS)
         wf.setsampwidth(self.p.get_sample_size(self.FORMAT))
@@ -59,4 +58,3 @@ class RecordThread(QThread):
         wf.writeframes(b''.join(frames))
 
         wf.close()
-

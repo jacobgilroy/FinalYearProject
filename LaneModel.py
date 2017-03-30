@@ -9,8 +9,8 @@ class LaneModel:
         self.id = laneID
         self.name = "Lane " + str(laneID)
         self.recordThread = RecordThread()
-        self.playThread = PlayThread()
         self.clips = [] # a list to store each wav associated with this lane
+        self.numClips = 0
         self.activated = True
         self.volume = 50.0
         self.outputDir = ""
@@ -26,7 +26,7 @@ class LaneModel:
     def setOutputFileName(self):
 
         # set the new output file name:
-        self.outputFileName = self.name + "-" + str(len(self.clips)+1)
+        self.outputFileName = self.name + "-" + str(self.numClips + 1)
 
         # set the record thread's output file name:
         self.recordThread.setOutputFileName(self.outputFileName)
@@ -68,6 +68,8 @@ class LaneModel:
     def stopRecording(self):
 
         self.recordThread.recording = False
+
+        self.numClips += 1
 
         # update the output file name:
         self.setOutputFileName()

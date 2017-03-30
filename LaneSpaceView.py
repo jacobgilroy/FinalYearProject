@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QWidget, QVBoxLayout
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QGridLayout
 from JamSpace.Views.LaneView import LaneView
 from JamSpace.Models.LaneSpaceModel import LaneSpaceModel
 
@@ -11,6 +11,9 @@ class LaneSpaceView(QWidget):
         # declare member variables:
         self.model = LaneSpaceModel()
         self.laneList = []
+
+        self.gridLayout = QGridLayout(self)
+
         '''
         defaultLane = LaneView(parent=self, laneNum=1)
         self.laneList.append(defaultLane)
@@ -24,9 +27,8 @@ class LaneSpaceView(QWidget):
 
         self.getLanes() # load the lanes
 
-        self.positionLanes()
-
         self.show()
+
 
     # this method retrieves lane models from the LaneSpaceModel and instantiates corresponding lane views:
     def getLanes(self):
@@ -44,13 +46,16 @@ class LaneSpaceView(QWidget):
     # this method stacks the lanes vertically:
     def positionLanes(self):
 
-        self.vboxLayout = QVBoxLayout(self)
+        self.gridLayout = QGridLayout(self)
+
+        i = 0
 
         for lane in self.laneList:
 
-            self.vboxLayout.addWidget(lane)
+            self.gridLayout.addWidget(lane, i, 0)
+            i += 1
 
-        self.setLayout(self.vboxLayout)
+        self.setLayout(self.gridLayout)
 
 '''
         for i in range(len(self.laneList)):

@@ -2,6 +2,7 @@ from PyQt5.QtCore import pyqtSlot
 from JamSpace.Views.MainView import MainView
 from JamSpace.Models.MainModel import MainModel
 from JamSpace.Models.LaneSpaceModel import LaneSpaceModel
+from pydub import AudioSegment
 import os
 
 class MainController:
@@ -28,19 +29,45 @@ class MainController:
         self.mainWindow.laneSpace.getLanes()
 
         # connect the new lane signals to their slots:
-        for lane in self.mainWindow.laneSpace.laneList:
-            lane.recordEvent[int].connect(self.startRecording)
-
-    # method to refresh the GUI/views? *****
-
-    '''    # this method refreshes laneModelList
-    def getLaneModels(self):
-
-        self.laneModelList = []
-
         for laneView in self.mainWindow.laneSpace.laneList:
-            self.laneModelList.append(laneView.model)
-    '''
+            laneView.recordEvent[int].connect(self.startRecording)
+
+        for laneModel in self.laneSpaceModel.laneList:
+            laneModel.setDirectory(self.model.projectPath) # set the project path for each lane
+
+    @pyqtSlot()
+    def startPlaying(self):
+
+        wavList = []
+        path = self.model.projectPath + "/Clips/"
+        laneAudio = AudioSegment.empty()
+
+        # concatenate all the clips associated with each lane:
+
+        for laneModel in self.laneSpaceModel.laneList:
+
+            for i in range(1,laneModel.numClips+1):
+
+                filePath = path + laneModel.name + "-" + str(i) + ".wav"
+
+                try:
+                    clip = AudioSegment.from_file(filePath, format="wav")
+                    laneAudio += clip
+
+                except IOError as io:
+                    print("Unable to open wav file: " + str(io))
+                    continue
+
+            wavList.append(laneAudio)
+
+        # pass the list of wavs to the play thread:
+        self.laneSpaceModel.playThread.setAudioSegments(wavList)
+
+        # set the play thread's output path:
+        self.laneSpaceModel.playThread.setOutputFilePath(path)
+
+        # run the play thread:
+        self.laneSpaceModel.playThread.start()
 
     @pyqtSlot(int)
     def startRecording(self, laneID):
@@ -54,6 +81,9 @@ class MainController:
             print('Recording on lane ' + str(laneID)) # DEBUG
             lane.startRecording()
 
+            # increment the clip number:
+            lane.setOutputFileName()
+
     def signalSlotConfig(self):
 
         # connect each lane's recordEvent signal to the record method:
@@ -61,7 +91,8 @@ class MainController:
             lane.recordEvent[int].connect(self.startRecording)
 
         # connect the MainView Buttons to their corresponding slots:
-        self.mainWindow.controlBar.addLaneBtn.pressed.connect(self.addLane)
+        self.mainWindow.controlBar.addLaneBtn.clicked.connect(self.addLane)
+        self.mainWindow.controlBar.playBtn.clicked.connect(self.startPlaying)
 
     def promptProjectDir(self):
 
@@ -78,11 +109,9 @@ class MainController:
         self.createDirStructure(directory)
 
         # pass the directory to each lane model:
-
-        clipsFolder = self.model.projectPath + "/Clips"
         for model in self.laneSpaceModel.laneList:
 
-            model.setDirectory(clipsFolder)
+            model.setDirectory(self.model.projectPath)
 
 
     def createDirStructure(self, directory):
