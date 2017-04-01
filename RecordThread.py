@@ -28,33 +28,39 @@ class RecordThread(QThread):
 
     def run(self):
 
-        self.recording = True
-        fullPath = str(self.OUTPUT_PATH + "/" + self.outputFileName + ".wav")
+        try:
 
-        stream = self.p.open(format=self.FORMAT,
-                        channels=self.CHANNELS,
-                        rate=self.RATE,
-                        input=True,
-                        frames_per_buffer=self.CHUNK)
+            self.recording = True
+            fullPath = str(self.OUTPUT_PATH + "/" + self.outputFileName + ".wav")
 
-        print("* RECORDING *")
+            stream = self.p.open(format=self.FORMAT,
+                            channels=self.CHANNELS,
+                            rate=self.RATE,
+                            input=True,
+                            frames_per_buffer=self.CHUNK)
 
-        frames = []
+            print("* RECORDING *")
 
-        while self.recording:
+            frames = []
 
-            data = stream.read(self.CHUNK)
-            frames.append(data)
+            while self.recording:
 
-        print("* DONE RECORDING *")
+                data = stream.read(self.CHUNK)
+                frames.append(data)
 
-        stream.close()
+            print("* DONE RECORDING *")
 
-        print(fullPath)
-        wf = wave.open(fullPath, 'wb')
-        wf.setnchannels(self.CHANNELS)
-        wf.setsampwidth(self.p.get_sample_size(self.FORMAT))
-        wf.setframerate(self.RATE)
-        wf.writeframes(b''.join(frames))
+            stream.close()
 
-        wf.close()
+            print(fullPath)
+            wf = wave.open(fullPath, 'wb')
+            wf.setnchannels(self.CHANNELS)
+            wf.setsampwidth(self.p.get_sample_size(self.FORMAT))
+            wf.setframerate(self.RATE)
+            wf.writeframes(b''.join(frames))
+
+            wf.close()
+
+        except IOError:
+
+            print("IO Error while recording")

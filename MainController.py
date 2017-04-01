@@ -54,11 +54,13 @@ class MainController:
                     clip = AudioSegment.from_file(filePath, format="wav")
                     laneAudio += clip
 
-                except IOError as io:
-                    print("Unable to open wav file: " + str(io))
+                except Exception as e:
+                    print("Unable to open wav file: " + str(e))
                     continue
 
+            #add the concatenated lane audio to the list & empty the template:
             wavList.append(laneAudio)
+            laneAudio = AudioSegment.empty()
 
         # pass the list of wavs to the play thread:
         self.laneSpaceModel.playThread.setAudioSegments(wavList)

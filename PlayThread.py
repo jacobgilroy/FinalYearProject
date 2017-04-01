@@ -1,5 +1,5 @@
 from PyQt5.QtCore import QThread
-import pyaudio#
+import pyaudio
 from pydub import AudioSegment
 import wave
 
@@ -46,37 +46,44 @@ class PlayThread(QThread):
 
             # overlay the wavs from self.audioSegments
             for seg in self.audioSegments:
-               template.overlay(seg=seg)
+                template = template.overlay(seg)
 
             self.output = template
             self.output.export(self.outputFilePath, format="wav")
 
     def run(self):
 
-        self.overLayLanes()
+        try:
 
-        if self.output is not None:
+            self.overLayLanes()
 
-            print("*playing*")
+            if self.output is not None:
 
-            stream = self.p.open(format=self.FORMAT,
-                            channels=self.CHANNELS,
-                            rate=self.RATE,
-                            output=True,
-                            frames_per_buffer=self.CHUNK)
+                print("*playing*")
 
-            wf = wave.open(self.outputFilePath, 'rb')
+                stream = self.p.open(format=self.FORMAT,
+                                channels=self.CHANNELS,
+                                rate=self.RATE,
+                                output=True,
+                                frames_per_buffer=self.CHUNK)
 
-            data = wf.readframes(wf.getnframes())
+                wf = wave.open(self.outputFilePath, 'rb')
 
-            while len(data) > 0:
-                stream.write(data)
-                data = wf.readframes(self.CHUNK)
+                data = wf.readframes(wf.getnframes())
 
-            stream.stop_stream()
-            stream.close()
-            wf.close()
+                while len(data) > 0:
+                    stream.write(data)
+                    data = wf.readframes(self.CHUNK)
 
-        else:
+                print("*done playing*")
 
-            print("No output to play")
+                stream.close()
+                wf.close()
+
+            else:
+
+                print("No output to play")
+
+        except IOError:
+
+            print("IO Error while playing")
