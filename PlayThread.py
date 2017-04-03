@@ -53,6 +53,8 @@ class PlayThread(QThread):
 
     def run(self):
 
+        self.playing = True
+
         try:
 
             self.overLayLanes()
@@ -71,7 +73,11 @@ class PlayThread(QThread):
 
                 data = wf.readframes(wf.getnframes())
 
-                while len(data) > 0:
+                while self.playing:
+
+                    if not len(data) > 0:
+                        break
+
                     stream.write(data)
                     data = wf.readframes(self.CHUNK)
 
@@ -82,8 +88,13 @@ class PlayThread(QThread):
 
             else:
 
-                print("No output to play")
+                print("No output to startPlaying")
 
         except IOError:
 
             print("IO Error while playing")
+
+    def stop(self):
+
+        self.playing = False
+        self.terminate()

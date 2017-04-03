@@ -73,12 +73,3 @@ class LaneModel:
 
         # update the output file name:
         self.setOutputFileName()
-
-    def play(self):
-
-        try:
-            self.playThread.start()
-        except IOError:
-            print("! An IO error has occurred !")
-            print("*cannot playback*")
-

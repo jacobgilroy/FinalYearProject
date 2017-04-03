@@ -10,7 +10,6 @@ class LaneSpaceModel:
         self.numLanes = 0
         self.laneSelected = 1
         self.laneList = [] # list of dictionaries to store each lane model
-
         self.addLane()  # add default lane
 
     def addLane(self):
@@ -20,6 +19,9 @@ class LaneSpaceModel:
         newLane = LaneModel(newID)
         self.laneList.append(newLane)
         self.numLanes += 1
+
+        # return the index of the new lane:
+        return int(self.numLanes)
 
     def removeLane(self, laneID):
 
@@ -34,3 +36,17 @@ class LaneSpaceModel:
     def getNumLanes(self):
 
         return self.numLanes
+
+    def startPlaying(self):
+
+        if not self.playThread.playing:
+
+           self.playThread.start()
+
+        else:
+
+            self.stopPlaying()
+
+    def stopPlaying(self):
+
+        self.playThread.stop()

@@ -40,16 +40,16 @@ class ControlBar(QWidget):
 
         self.setLayout(hbox)
 
-#        self.signalSlotInit()
+        #self.signalSlotInit()
 
         self.show()
 
 
-#    def signalSlotInit(self):
+    #def signalSlotInit(self):
 
-#        self.addLaneBtn.clicked.connect(self.addLaneEvent)
+        #self.addLaneBtn.clicked.connect(self.addLaneEvent)
 
 
-    def addLaneEvent(self):
+    #def addLaneEvent(self):
 
-        self.addLaneSignal.emit()
+        #self.addLaneSignal.emit()

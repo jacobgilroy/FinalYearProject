@@ -23,17 +23,25 @@ class MainController:
     def addLane(self):
 
         # instruct the lanespace model to add a new lane:
-        self.laneSpaceModel.addLane()
+        newId = self.laneSpaceModel.addLane()
 
-        # instruct the laneview to retrieve it's lanes from the model (refresh it's list):
+        # instruct the lane space to retrieve it's lanes from the model (refresh it's list):
         self.mainWindow.laneSpace.getLanes()
 
         # connect the new lane signals to their slots:
+        newLane = next((l for l in self.mainWindow.laneSpace.laneList if l.model.id == newId), None)
+        newLane.recordEvent[int].connect(self.startRecording)
+
+        # set the project path for the new lane model:
+        newLane.model.setDirectory(self.model.projectPath)
+
+        '''
+        # connect the lane signals to their slots:
         for laneView in self.mainWindow.laneSpace.laneList:
             laneView.recordEvent[int].connect(self.startRecording)
 
         for laneModel in self.laneSpaceModel.laneList:
-            laneModel.setDirectory(self.model.projectPath) # set the project path for each lane
+            laneModel.setDirectory(self.model.projectPath) # set the project path for each lane '''
 
     @pyqtSlot()
     def startPlaying(self):
@@ -46,7 +54,7 @@ class MainController:
 
         for laneModel in self.laneSpaceModel.laneList:
 
-            for i in range(1,laneModel.numClips+1):
+            for i in range(1, laneModel.numClips+1):
 
                 filePath = path + laneModel.name + "-" + str(i) + ".wav"
 
@@ -58,18 +66,23 @@ class MainController:
                     print("Unable to open wav file: " + str(e))
                     continue
 
-            #add the concatenated lane audio to the list & empty the template:
+            #add the concatenated lane audio to the list & empty the template for re-use:
             wavList.append(laneAudio)
             laneAudio = AudioSegment.empty()
 
-        # pass the list of wavs to the play thread:
+        # pass the list of wavs to the startPlaying thread:
         self.laneSpaceModel.playThread.setAudioSegments(wavList)
 
-        # set the play thread's output path:
+        # set the startPlaying thread's output path:
         self.laneSpaceModel.playThread.setOutputFilePath(path)
 
-        # run the play thread:
-        self.laneSpaceModel.playThread.start()
+        # run the startPlaying thread:
+        self.laneSpaceModel.startPlaying()
+
+    @pyqtSlot()
+    def stopPlaying(self):
+
+        self.laneSpaceModel.stopPlaying()
 
     @pyqtSlot(int)
     def startRecording(self, laneID):
@@ -95,6 +108,7 @@ class MainController:
         # connect the MainView Buttons to their corresponding slots:
         self.mainWindow.controlBar.addLaneBtn.clicked.connect(self.addLane)
         self.mainWindow.controlBar.playBtn.clicked.connect(self.startPlaying)
+        self.mainWindow.controlBar.stopBtn.clicked.connect(self.stopPlaying)
 
     def promptProjectDir(self):
 
