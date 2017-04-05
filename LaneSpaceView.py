@@ -56,7 +56,7 @@ class LaneSpaceView(QWidget):
             self.gridLayout.addWidget(lane, i, 0)
             i += 1
 
-'''
+    '''
         for i in range(len(self.laneList)):
 
             current = self.laneList[i]
@@ -73,6 +73,6 @@ class LaneSpaceView(QWidget):
 
                 current.setGeometry(xPos, yPos, self.width(), height)
 
-'''
+    '''
 
     #def refresh(self):

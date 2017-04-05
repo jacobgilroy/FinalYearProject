@@ -1,4 +1,5 @@
 from PyQt5.QtCore import pyqtSlot
+from PyQt5.QtWidgets import qApp, QAction
 from JamSpace.Views.MainView import MainView
 from JamSpace.Models.MainModel import MainModel
 from JamSpace.Models.LaneSpaceModel import LaneSpaceModel
@@ -109,6 +110,9 @@ class MainController:
         self.mainWindow.controlBar.addLaneBtn.clicked.connect(self.addLane)
         self.mainWindow.controlBar.playBtn.clicked.connect(self.startPlaying)
         self.mainWindow.controlBar.stopBtn.clicked.connect(self.stopPlaying)
+
+        # connect the menu bar actions to their slots:
+        self.mainWindow.exitAction.triggered.connect(qApp.quit)
 
     def promptProjectDir(self):
 
